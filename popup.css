@@ -1,0 +1,67 @@
+body {
+  margin: 5px;
+  white-space: nowrap;
+  background-color: #E1E5EE;
+}
+
+.title {
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 10px;
+  padding-bottom: 5px;
+}
+
+.dashboard {
+  margin: 5px;
+}
+
+#dashboard-header {
+  text-align: right;
+  margin-bottom: 5px;
+}
+
+#redeem-btn {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btn {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #2A324B;
+}
+
+.wallet {
+  height: 80px;
+  border: 1px solid #767B91;
+  border-radius: 5px;
+  background-color: rgba(199, 204, 219, 0.329);
+  text-align: center;
+  font-size: 20px;
+  color: #2A324B;
+  line-height: 80px;
+}
+
+.options {
+  height: 26px;
+  text-align: center;
+  font-size: 14px;
+  color: #2A324B;
+  line-height: 26px;
+}
+
+.share {
+  height: 20px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: #2A324B;
+  line-height: 20px;
+}
+
+#container {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
