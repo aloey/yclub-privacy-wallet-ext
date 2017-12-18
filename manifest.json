@@ -5,11 +5,11 @@
     "version": "1.0",
     "browser_action": {
         "default_icon": {
-            "16": "images/pw16.png",
-            "24": "images/pw24.png",
-            "32": "images/pw32.png",
-            "64": "images/pw64.png",
-            "128": "images/pw128.png"
+            "16": "images/pwoff16.png",
+            "24": "images/pwoff24.png",
+            "32": "images/pwoff32.png",
+            "64": "images/pwoff64.png",
+            "128": "images/pwoff128.png"
         },
         "default_popup": "popup.html",
         "default_title": "Privacy Wallet"
