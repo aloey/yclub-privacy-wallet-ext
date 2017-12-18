@@ -21,10 +21,12 @@ while (numHosts > 0) {
 }
 
 // Advert
+var bannerStatus = true;
 var width = 300;
 var height = 120;
 var mouseover = false;
 var hideJob;
+var displayOption = 0;
 
 function moveAdvert(advert, option) {
     $(advertDiv).css('transition', '');
@@ -57,30 +59,32 @@ function moveAdvert(advert, option) {
 }
 
 function getStatus(callback) {
-    chrome.storage.sync.get(['status', 'displayOption'], function (items) {
-        console.log('Current status: ' + items.status);
-        if (callback) callback(chrome.runtime.lastError ? null : items);
+    chrome.storage.sync.get(['banner', 'displayOption'], function (items) {
+        if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
+        var banner = {
+            status: items.banner || typeof items.banner === 'undefined',
+            displayOption: items.displayOption || 0
+        };
+        if (callback) callback(banner);
     });
 }
 
 function showAdvert(advert) {
-    getStatus(function (items) {
-        var displayOption = items.displayOption;
-        console.log('Current display option: ' + displayOption);
+    if (bannerStatus) {
         moveAdvert(advert, displayOption);
         setTimeout(function () {
-            console.log('Displaying advert');
+            console.log('Displaying advert (' + displayOption + ')');
             var direction = $(advert).data('direction');
             var offset = $(advert).data('offset-show');
             $(advertDiv).css('transition', '0.5s');
             $(advert).css(direction, offset + "px");
             hideAdvert(advert, 2500);
         }, 500);
-    });
+    }
 }
 
 function hideAdvert(advert, timeout) {
-    if(hideJob) clearTimeout(hideJob);
+    if (hideJob) clearTimeout(hideJob);
     hideJob = setTimeout(function () {
         var direction = $(advert).data('direction');
         var offset = $(advert).data('offset-hide');
@@ -141,12 +145,40 @@ $(advertDiv).append(msg);
 
 document.body.appendChild(advertDiv);
 
-showAdvert(advertDiv);
-
-chrome.storage.onChanged.addListener(function (changes, areaName) {
+getStatus(function (banner) {
+    bannerStatus = banner.status;
+    displayOption = banner.displayOption;
+    console.log('Banner: ' + ((bannerStatus) ? 'ON (' + displayOption + ')' : 'OFF'));
     showAdvert(advertDiv);
-})
+});
 
+// Display option listener
+chrome.storage.onChanged.addListener(function (changes, areaName) {
+    if (displayOption) {
+    }
+});
 
+// Banner status listener
+chrome.storage.onChanged.addListener(function (changes, areaName) {
+    var banner = changes.banner;
+    var dispOpt = changes.displayOption;
+    if (banner) {
+        if (banner.newValue) {
+            bannerStatus = true;
+            console.log('Banner: ON (' + displayOption + ')');
+            showAdvert(advertDiv);
+        } else {
+            bannerStatus = false;
+            console.log('Banner: OFF');
+        }
+    }
+    if (dispOpt) {
+        displayOption = dispOpt.displayOption;
+        console.log('Display option changed to: ' + displayOption);
+        showAdvert(advertDiv);
+    }
+});
+
+// Tracked URL message
 console.log(url);
 chrome.runtime.sendMessage({ "trigger": "currentUrl", "currentUrl": url });
