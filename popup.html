@@ -7,57 +7,113 @@
 <html>
 
 <head>
-  <title>Privacy Wallet Popup</title>
-  <link rel="stylesheet" type="text/css" href="popup.css">
-  <style type="text/css">
-  </style>
+    <title>Privacy Wallet Popup</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="popup.css">
+    <style type="text/css">
+    </style>
 
-  <!--
+    <!--
       - JavaScript and HTML must be in separate files: see our Content Security
       - Policy documentation[1] for details and explanation.
       -
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
     -->
-  <script src="popup.js"></script>
+    <script src="popup.js"></script>
 </head>
 
 <body>
-  <div class="title">
-    <img id="logo" src="images/pwTitle.png">
-  </div>
-  <hr>
-  <div class="dashboard">
-    <div id="dashboard-header">
-      <input id="redeem-btn" class="btn" type="button" value="Redeem">
+    <div id="header">
+        <img id="logo" src="images/pwTitle.png">
+        <input id="logout-btn" class="btn" type="button" value="Logout">
     </div>
-    <div id="dashboard-body">
-      <div class="wallet">
-        $19.20
-      </div>
+    <hr>
+    <div id="dashboard" class="container">
+        <div id="dashboard-header">
+            <input id="redeem-btn" class="btn font-yellow" type="button" value="Redeem">
+        </div>
+        <div id="dashboard-body">
+            <div id="wallet" class="font-dark">
+                $19.20
+            </div>
+            <div id="earning" class="font-light">
+                Today: $0.28
+            </div>
+        </div>
     </div>
-  </div>
-  <hr>
-  <div class="options">
-    <input id="activate-btn" class="btn" type="button" value="Activate" style="display: none;">
-    <input id="pause-btn" class="btn" type="button" value="Pause" style="display: none;">
-  </div>
-  <hr>
-  <div class="options">
-    <input id="settings-btn" class="btn" type="button" value="Settings">
-  </div>
-  <div class="options">
-    <input id="option0-btn" class="opt-btn" type="button" value="1">
-    <input id="option1-btn" class="opt-btn" type="button" value="2">
-    <input id="option2-btn" class="opt-btn" type="button" value="3">
-  </div>
-  <hr>
-  <div class="options">
-    <input id="logout-btn" class="" type="button" value="Logout">
-  </div>
-  <hr>
-  <div class="share">
-    Share and earn more!
-  </div>
+    <hr class="shadowLine clear">
+    <div class="container">
+        <div>
+            <input id="banner-on-btn" class="btn font-medium pull-right" type="button" value="Activate" style="display: none;">
+            <input id="banner-off-btn" class="btn font-medium pull-right" type="button" value="Deactivate" style="display: none;">
+            <label class="font-medium">Banner Ads</label>
+        </div>
+        <div>
+            <span class="font-dark pull-right">$14.08</span>
+            <label class="font-light">Total amount you earned up to date</label>
+        </div>
+        <div>
+            <span class="font-dark pull-right">$2.08</span>
+            <label class="font-light">Total amount you have redeemed</label>
+        </div>
+        <div class="miscOption">
+            <span class="font-light italic">Want to know more?</span>
+            <input id="see-report-btn" class="btn font-light pull-right" type="button" value="See Report">
+        </div>
+    </div>
+    <hr class="clear">
+    <div class="container">
+        <div>
+            <input id="block-on-btn" class="btn font-medium pull-right" type="button" value="Activate" style="display: none;">
+            <input id="block-off-btn" class="btn font-medium pull-right" type="button" value="Deactivate" style="display: none;">
+            <label class="font-medium">Ad Block</label>
+        </div>
+        <div>
+            <span class="font-dark pull-right">$14.08</span>
+            <label class="font-light">Number of blocked ads on this page</label>
+        </div>
+        <div>
+            <span class="font-dark pull-right">$2.08</span>
+            <label class="font-light">Number of blocked ads today</label>
+        </div>
+        <div class="miscOption">
+            <span class="font-light italic">Want to allow ads on this site?</span>
+            <input id="see-report-btn" class="btn font-light pull-right" type="button" value="Set Whitelist">
+        </div>
+        <div class="miscOption">
+            <span class="font-light italic">Want to block ads on this site?</span>
+            <input id="see-report-btn" class="btn font-light pull-right" type="button" value="Report this Page">
+        </div>
+    </div>
+    <hr class="clear">
+    <div class="container">
+        <div>
+            <input id="update-btn" class="btn font-medium pull-right" type="button" value="Update">
+            <label class="font-medium">Profile</label>
+        </div>
+        <div>
+            <span class="font-dark pull-right">Regular</span>
+            <label class="font-light">Your current status</label>
+        </div>
+        <div class="miscOption">
+            <span class="font-light italic">Do you want to change settings?</span>
+            <input id="settings-btn" class="btn font-light pull-right" type="button" value="Change Settings">
+        </div>
+        <div class="miscOption">
+            <span class="font-light italic">Are you experiencing any issue?</span>
+            <input id="see-report-btn" class="btn font-light pull-right" type="button" value="Report Issue">
+        </div>
+    </div>
+    <hr class="clear">
+    <!-- <div class="container">
+        <input id="option0-btn" class="opt-btn" type="button" value="1">
+        <input id="option1-btn" class="opt-btn" type="button" value="2">
+        <input id="option2-btn" class="opt-btn" type="button" value="3">
+    </div>
+    <hr class="clear"> -->
+    <div id="footer" class="font-yellow">
+        Share with benefits
+    </div>
 </body>
 
 </html>
