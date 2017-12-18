@@ -1,3 +1,100 @@
+function getStatus(callback) {
+    chrome.storage.sync.get(['adBlock', 'banner'], function (items) {
+        if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
+        var status = {
+            adBlock: items.adBlock || typeof items.adBlock === 'undefined',
+            banner: items.banner || typeof items.banner === 'undefined'
+        };
+        if (callback) callback(status);
+    });
+}
+
+function setStatus(field, status, callback) {
+    chrome.storage.sync.set({ [field]: status }, function () {
+        console.log(field + ' status set to ' + status);
+        if (callback) callback();
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    var redeemBtn = document.getElementById('redeem-btn');
+    var blockOnBtn = document.getElementById('block-on-btn');
+    var blockOffBtn = document.getElementById('block-off-btn');
+    var bannerOnBtn = document.getElementById('banner-on-btn');
+    var bannerOffBtn = document.getElementById('banner-off-btn');
+    var settingsBtn = document.getElementById('settings-btn');
+    var logoutBtn = document.getElementById('logout-btn');
+
+    var opt0Btn = document.getElementById('option0-btn');
+    var opt1Btn = document.getElementById('option1-btn');
+    var opt2Btn = document.getElementById('option2-btn');
+
+    getStatus(function (status) {
+        if (status.adBlock) {
+            blockOffBtn.style.display = 'block';
+        } else {
+            blockOnBtn.style.display = 'block';
+        }
+        if (status.banner) {
+            bannerOffBtn.style.display = 'block';
+        } else {
+            bannerOnBtn.style.display = 'block';
+        }
+    });
+
+    blockOnBtn.addEventListener('click', function () {
+        blockOnBtn.style.display = 'none';
+        blockOffBtn.style.display = 'block';
+        chrome.runtime.sendMessage({ trigger: 0, statusChange: 2 }, function () {
+            setStatus('adBlock', true);
+        });
+    });
+
+    blockOffBtn.addEventListener('click', function () {
+        blockOffBtn.style.display = 'none';
+        blockOnBtn.style.display = 'block';
+        chrome.runtime.sendMessage({ trigger: 0, statusChange: -2 }, function () {
+            setStatus('adBlock', false);
+        });
+    });
+
+    bannerOnBtn.addEventListener('click', function () {
+        bannerOnBtn.style.display = 'none';
+        bannerOffBtn.style.display = 'block';
+        chrome.runtime.sendMessage({ trigger: 0, statusChange: 1 }, function () {
+            setStatus('banner', true);
+        });
+    });
+
+    bannerOffBtn.addEventListener('click', function () {
+        bannerOffBtn.style.display = 'none';
+        bannerOnBtn.style.display = 'block';
+        chrome.runtime.sendMessage({ trigger: 0, statusChange: -1 }, function () {
+            setStatus('banner', false);
+        });
+    });
+
+    opt0Btn.addEventListener('click', function () {
+        chrome.storage.sync.set({ displayOption: 0 }, function () {
+            console.log('Display option set to 0');
+        });
+    });
+    opt1Btn.addEventListener('click', function () {
+        chrome.storage.sync.set({ displayOption: 1 }, function () {
+            console.log('Display option set to 1');
+        });
+    });
+    opt2Btn.addEventListener('click', function () {
+        chrome.storage.sync.set({ displayOption: 2 }, function () {
+            console.log('Display option set to 2');
+        });
+    });
+});
+
+// function changeBackgroundColor(color) {
+//     var script = 'document.body.style.backgroundColor="' + color + '";';
+//     chrome.tabs.executeScript({ code: script });
+// }
 
 function getCurrentTabUrl(callback) {
     // Query filter to be passed to chrome.tabs.query - see
@@ -14,102 +111,3 @@ function getCurrentTabUrl(callback) {
         callback(url);
     });
 }
-
-function changeBackgroundColor(color) {
-    var script = 'document.body.style.backgroundColor="' + color + '";';
-    chrome.tabs.executeScript({ code: script });
-}
-
-function getActivationStatus(callback) {
-    chrome.storage.sync.get('status', function (items) {
-        console.log('Current status: ' + items.status);
-        if (callback) callback(chrome.runtime.lastError ? null : items.status);
-    });
-}
-
-function setActivationStatus(status, callback) {
-    chrome.storage.sync.set({ status: status }, function () {
-        console.log('Extension status set to ' + status);
-        if (callback) callback();
-    });
-}
-
-function setIcon(status, callback) {
-    var icon = (status)
-        ? {
-            "16": "images/pw16.png",
-            "24": "images/pw24.png",
-            "32": "images/pw32.png",
-            "64": "images/pw64.png",
-            "128": "images/pw128.png"
-        }
-        : {
-            "16": "images/pwoff16.png",
-            "24": "images/pwoff24.png",
-            "32": "images/pwoff32.png",
-            "64": "images/pwoff64.png",
-            "128": "images/pwoff128.png"
-        };
-    chrome.browserAction.setIcon({ path: icon }, function () {
-        if (callback) callback();
-    });
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    var redeemButton = document.getElementById('redeem-btn');
-    var activateButton = document.getElementById('activate-btn');
-    var pauseButton = document.getElementById('pause-btn');
-    var settingsButton = document.getElementById('settings-btn');
-    var logoutButton = document.getElementById('logout-btn');
-
-    var opt0Btn = document.getElementById('option0-btn');
-    var opt1Btn = document.getElementById('option1-btn');
-    var opt2Btn = document.getElementById('option2-btn');
-
-    getActivationStatus(function (lastStatus) {
-        if (typeof lastStatus === 'undefined' || lastStatus) {
-            setIcon(true, function () {
-                pauseButton.style.display = 'inline';
-            });
-        } else {
-            setIcon(false, function () {
-                activateButton.style.display = 'inline';
-            });
-        };
-    });
-
-    activateButton.addEventListener('click', function () {
-        setActivationStatus(true, function () {
-            setIcon(true, function () {
-                activateButton.style.display = 'none';
-                pauseButton.style.display = 'inline';
-            });
-
-        });
-    });
-
-    pauseButton.addEventListener('click', function () {
-        setActivationStatus(false, function () {
-            setIcon(false, function () {
-                pauseButton.style.display = 'none';
-                activateButton.style.display = 'inline';
-            });
-        });
-    });
-
-    opt0Btn.addEventListener('click', function(){
-        chrome.storage.sync.set({ displayOption: 0 }, function () {
-            console.log('Display option set to 0');
-        });
-    });
-    opt1Btn.addEventListener('click', function(){
-        chrome.storage.sync.set({ displayOption: 1 }, function () {
-            console.log('Display option set to 1');
-        });
-    });
-    opt2Btn.addEventListener('click', function(){
-        chrome.storage.sync.set({ displayOption: 2 }, function () {
-            console.log('Display option set to 2');
-        });
-    });
-});
