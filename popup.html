@@ -25,14 +25,16 @@
 <body>
     <div id="header">
         <img id="logo" src="images/pwTitle.png">
-        <input id="logout-btn" class="btn" type="button" value="Logout">
+        <input id="login-btn" class="btn underline header-btn" type="button" value="Login" style="display: none;">
+        <input id="logout-btn" class="btn underline header-btn" type="button" value="Logout" style="display: none;">
+        <input id="main-btn" class="btn underline header-btn" type="button" value="Main" style="display: none;">
+        <hr class="header-rule">
     </div>
-    <hr>
-    <div id="dashboard" class="container">
+    <div id="dashboard" class="container" style="display: none;">
         <div id="dashboard-header">
-            <input id="redeem-btn" class="btn font-yellow" type="button" value="Redeem">
+            <input id="redeem-btn" class="btn underline font-yellow" type="button" value="Redeem">
         </div>
-        <div id="dashboard-body">
+        <div id="dashboard-body" class="center-align">
             <div id="wallet" class="font-dark">
                 $19.20
             </div>
@@ -40,12 +42,12 @@
                 Today: $0.28
             </div>
         </div>
+        <hr class="shadowLine clear">
     </div>
-    <hr class="shadowLine clear">
-    <div class="container">
+    <div id="banner-option" class="container" style="display: none;">
         <div>
-            <input id="banner-on-btn" class="btn font-medium pull-right" type="button" value="Activate" style="display: none;">
-            <input id="banner-off-btn" class="btn font-medium pull-right" type="button" value="Deactivate" style="display: none;">
+            <input id="banner-on-btn" class="btn underline font-medium pull-right" type="button" value="Activate" style="display: none;">
+            <input id="banner-off-btn" class="btn underline font-medium pull-right" type="button" value="Deactivate" style="display: none;">
             <label class="font-medium">Banner Ads</label>
         </div>
         <div>
@@ -56,63 +58,110 @@
             <span class="font-dark pull-right">$2.08</span>
             <label class="font-light">Total amount you have redeemed</label>
         </div>
-        <div class="miscOption">
+        <div class="right-align">
             <span class="font-light italic">Want to know more?</span>
-            <input id="see-report-btn" class="btn font-light pull-right" type="button" value="See Report">
+            <input id="see-report-btn" class="btn underline font-light pull-right" type="button" value="See Report">
         </div>
+        <hr class="clear">
     </div>
-    <hr class="clear">
-    <div class="container">
+    <div id="adblocker-option" class="container">
         <div>
-            <input id="block-on-btn" class="btn font-medium pull-right" type="button" value="Activate" style="display: none;">
-            <input id="block-off-btn" class="btn font-medium pull-right" type="button" value="Deactivate" style="display: none;">
+            <input id="block-on-btn" class="btn underline font-medium pull-right" type="button" value="Activate" style="display: none;">
+            <input id="block-off-btn" class="btn underline font-medium pull-right" type="button" value="Deactivate" style="display: none;">
             <label class="font-medium">Ad Block</label>
         </div>
         <div>
-            <span class="font-dark pull-right">$14.08</span>
+            <span class="font-dark pull-right">56</span>
             <label class="font-light">Number of blocked ads on this page</label>
         </div>
         <div>
-            <span class="font-dark pull-right">$2.08</span>
+            <span class="font-dark pull-right">565</span>
             <label class="font-light">Number of blocked ads today</label>
         </div>
-        <div class="miscOption">
+        <div class="right-align">
             <span class="font-light italic">Want to allow ads on this site?</span>
-            <input id="see-report-btn" class="btn font-light pull-right" type="button" value="Set Whitelist">
+            <input id="see-report-btn" class="btn underline font-light pull-right" type="button" value="Set Whitelist">
         </div>
-        <div class="miscOption">
+        <div class="right-align">
             <span class="font-light italic">Want to block ads on this site?</span>
-            <input id="see-report-btn" class="btn font-light pull-right" type="button" value="Report this Page">
+            <input id="see-report-btn" class="btn underline font-light pull-right" type="button" value="Report this Page">
         </div>
+        <hr class="clear">
     </div>
-    <hr class="clear">
-    <div class="container">
+    <div id="profile-option" class="container" style="display: none;">
         <div>
-            <input id="update-btn" class="btn font-medium pull-right" type="button" value="Update">
+            <input id="update-btn" class="btn underline font-medium pull-right" type="button" value="Update">
             <label class="font-medium">Profile</label>
         </div>
         <div>
             <span class="font-dark pull-right">Regular</span>
             <label class="font-light">Your current status</label>
         </div>
-        <div class="miscOption">
+        <div class="right-align">
             <span class="font-light italic">Do you want to change settings?</span>
-            <input id="settings-btn" class="btn font-light pull-right" type="button" value="Change Settings">
+            <input id="settings-btn" class="btn underline font-light pull-right" type="button" value="Change Settings">
         </div>
-        <div class="miscOption">
+        <div class="right-align">
             <span class="font-light italic">Are you experiencing any issue?</span>
-            <input id="see-report-btn" class="btn font-light pull-right" type="button" value="Report Issue">
+            <input id="see-report-btn" class="btn underline font-light pull-right" type="button" value="Report Issue">
         </div>
+        <hr class="clear">
     </div>
-    <hr class="clear">
+    <div id="register-option" class="container center-align" style="display: none;">
+        <div class="container">
+            <span class="font-medium">Sign up now to unlock the following benefits</span>
+        </div>
+        <div class="container">
+            <ul>
+                <li>
+                    <p class="font-light">Earn money while you surf the internet</p>
+                </li>
+                <li>
+                    <p class="font-light">Receive only solicited ads to earn more!
+                        <br>(You may turn off anytime or customize)</p>
+                </li>
+            </ul>
+        </div>
+        <div class="container">
+            <p class="font-blue">"We protect your privacy by not collecting or saving any personal infromation. (eg. phone number, name, exact
+                address)"
+            </p>
+        </div>
+        <div class="container left-align">
+            <p class="font-light">We require email address only for verification and password recovery purposes</p>
+        </div>
+        <div class="container">
+            <input id="register-btn" class="bg-btn font-white bg-yellow" type="button" value="SIGN UP">
+        </div>
+        <hr class="clear">
+    </div>
+    <div id="login-option" class="container center-align" style="display: none;">
+        <div class="container">
+            <p class="font-medium inline vertical-spacer">Member Login</p>
+        </div>
+        <div class="container">
+            <input id="email" class="credential font-dark bg-white" placeholder="Email">
+        </div>
+        <div class="container">
+            <input id="password" class="credential font-dark bg-white" type="password" placeholder="Password">
+        </div>
+        <div class="container">
+            <input id="auth-btn" class="bg-btn font-white bg-yellow" type="button" value="LOG IN">
+        </div>
+        <div class="container">
+            <p class="font-light inline vertical-spacer">Don't have an account?</p>
+            <input id="signup-btn" class="btn underline font-light inline" type="button" value="Sign Up">
+        </div>
+        <hr class="clear">
+    </div>
     <!-- <div class="container">
         <input id="option0-btn" class="opt-btn" type="button" value="1">
         <input id="option1-btn" class="opt-btn" type="button" value="2">
         <input id="option2-btn" class="opt-btn" type="button" value="3">
     </div>
     <hr class="clear"> -->
-    <div id="footer" class="font-yellow">
-        Share with benefits
+    <div id="footer" class="container">
+        <span class="btn font-yellow">Share with benefits</span>
     </div>
 </body>
 

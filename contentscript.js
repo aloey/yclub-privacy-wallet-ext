@@ -59,10 +59,10 @@ function moveAdvert(advert, option) {
 }
 
 function getStatus(callback) {
-    chrome.storage.sync.get(['banner', 'displayOption'], function (items) {
+    chrome.storage.sync.get(['auth', 'banner', 'displayOption'], function (items) {
         if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
         var banner = {
-            status: items.banner || typeof items.banner === 'undefined',
+            status: items.auth && (items.banner || typeof items.banner === 'undefined'),
             displayOption: items.displayOption || 0
         };
         if (callback) callback(banner);
@@ -150,12 +150,6 @@ getStatus(function (banner) {
     displayOption = banner.displayOption;
     console.log('Banner: ' + ((bannerStatus) ? 'ON (' + displayOption + ')' : 'OFF'));
     showAdvert(advertDiv);
-});
-
-// Display option listener
-chrome.storage.onChanged.addListener(function (changes, areaName) {
-    if (displayOption) {
-    }
 });
 
 // Banner status listener

@@ -39,14 +39,29 @@ function setIcon(statusId, callback) {
         if (callback) callback();
     });
 }
+
 function getStatus(callback) {
-    chrome.storage.sync.get(['adBlock', 'banner'], function (items) {
+    chrome.storage.sync.get(['auth', 'adBlock', 'banner'], function (items) {
         if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
         var status = {
+            auth: items.auth,
             adBlock: items.adBlock || typeof items.adBlock === 'undefined',
             banner: items.banner || typeof items.banner === 'undefined'
         };
         if (callback) callback(status);
+    });
+}
+
+function initialize() {
+    getStatus(function (status) {
+        var adBlock = status.adBlock;
+        if (adBlock) {
+            chrome.webRequest.onBeforeRequest.addListener(blockWebRequest, { urls: blacklist }, ["blocking"]);
+        }
+        console.log('Ad blocker: ' + ((adBlock) ? 'ON' : 'OFF'));
+        statusId = (adBlock ? 2 : 0) + (status.banner && status.auth ? 1 : 0);
+        console.log('Status ID: ' + statusId);
+        setIcon(statusId);
     });
 }
 
@@ -72,7 +87,11 @@ chrome.runtime.onMessage.addListener(
 
 // Ad blocking listener
 chrome.storage.onChanged.addListener(function (changes, areaName) {
+    var auth = changes.auth;
     var adBlock = changes.adBlock;
+    if (auth) {
+        initialize();
+    }
     if (adBlock) {
         if (adBlock.newValue) {
             chrome.webRequest.onBeforeRequest.addListener(blockWebRequest, { urls: blacklist }, ["blocking"]);
@@ -85,40 +104,6 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
 });
 
 // Initialize
-getStatus(function (status) {
-    var adBlock = status.adBlock;
-    if (adBlock) {
-        chrome.webRequest.onBeforeRequest.addListener(blockWebRequest, { urls: blacklist }, ["blocking"]);
-    }
-    console.log('Ad blocker: ' + ((adBlock) ? 'ON' : 'OFF'));
-    statusId = (adBlock ? 2 : 0) + (status.banner ? 1 : 0);
-    console.log('Status ID: ' + statusId);
-    setIcon(statusId);
-});
+initialize();
 
-// 
-
-// var redeemBtn = document.getElementById('redeem-btn');
-// redeemBtn.addEventListener('click', () => {
-//     var field = document.getElementsByClassName('share');
-//     field.innerHTML = '__MSG_@@extension_id__';
-// })
-
-// var views = chrome.extension.getViews(/* { type: 'popup' } */);
-// for (var i = 0; i < views.length; i++) {
-//     console.log(views[i]);
-    // const redeemBtn = views[i].document.getElementById('redeem-btn');
-    // redeemBtn.addEventListener('click', () => { console.log('clicked'); });
-// }
-
-// document.addEventListener("DOMContentLoaded", function () {
-//     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-//         // Note: this requires "activeTab" permission to access the URL
-//         if (/* condition on tabs[0].url */) {
-//             /* Adapt UI for condition 1 */
-//         } else if (/* ... */) {
-//             /* Adapt UI for condition 2 */
-//         }
-//     });
-// });
 
