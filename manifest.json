@@ -37,6 +37,7 @@
     ],
     "permissions": [
         "activeTab",
+        "tabs",
         "storage",
         "contextMenus",
         "webRequest",

@@ -10,47 +10,138 @@ function getStatus(callback) {
     });
 }
 
-function setStatus(field, status, callback) {
-    chrome.storage.sync.set({ [field]: status }, function () {
-        console.log(field + ' status set to ' + status);
+function setStatus(status, callback) {
+    chrome.storage.sync.set(status, function () {
+        var keys = Object.keys(status);
+        for (var i = 0; i < keys.length; i++) {
+            console.log(keys[i] + ' status set to ' + status[keys[i]]);
+        }
         if (callback) callback();
     });
 }
 
-function adBlocker(status) {
+function adBlocker() {
     var blockOnBtn = document.getElementById('block-on-btn');
     var blockOffBtn = document.getElementById('block-off-btn');
+    var status;
     var statusChange;
-    if (status) {
+    if (this.id === blockOnBtn.id) {
+        status = true;
         blockOnBtn.style.display = 'none';
         blockOffBtn.style.display = 'block';
         statusChange = 2;
-    } else {
+    } else if (this.id === blockOffBtn.id) {
+        status = false;
         blockOffBtn.style.display = 'none';
         blockOnBtn.style.display = 'block';
         statusChange = -2;
     }
     chrome.runtime.sendMessage({ trigger: 0, statusChange: statusChange }, function () {
-        setStatus('adBlock', status);
+        setStatus({ adBlock: status });
     });
 }
 
-function banner(status) {
+function banner() {
     var bannerOnBtn = document.getElementById('banner-on-btn');
     var bannerOffBtn = document.getElementById('banner-off-btn');
+    var status;
     var statusChange;
-    if (status) {
+    if (this.id === bannerOnBtn.id) {
+        status = true;
         bannerOnBtn.style.display = 'none';
         bannerOffBtn.style.display = 'block';
         statusChange = 1;
-    } else {
+    } else if (this.id === bannerOffBtn.id) {
+        status = false;
         bannerOffBtn.style.display = 'none';
         bannerOnBtn.style.display = 'block';
         statusChange = -1;
     }
     chrome.runtime.sendMessage({ trigger: 0, statusChange: statusChange }, function () {
-        setStatus('banner', status);
+        setStatus({ banner: status });
     });
+}
+
+function clearErrors() {
+    var email = document.getElementById('email');
+    var password = document.getElementById('password');
+    var emErr = document.getElementById('email-error');
+    var pwErr = document.getElementById('password-error');
+    if (emErr) email.parentNode.removeChild(emErr);
+    if (pwErr) password.parentNode.removeChild(pwErr);
+}
+
+function login() {
+    var email = document.getElementById('email');
+    email.value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('login-btn').style.display = 'none';
+    document.getElementById('register-option').style.display = 'none';
+    document.getElementById('main-btn').style.display = 'block';
+    document.getElementById('login-option').style.display = 'block';
+    clearErrors();
+    email.focus();
+}
+
+function authOnEnter(keypress) {
+    if (keypress.keyCode === 13) {
+        document.getElementById('auth-btn').click();
+    }
+}
+
+function backToMain() {
+    document.getElementById('login-btn').style.display = 'block';
+    document.getElementById('register-option').style.display = 'block';
+    document.getElementById('main-btn').style.display = 'none';
+    document.getElementById('login-option').style.display = 'none';
+}
+
+function authenticate() {
+    var email = document.getElementById('email');
+    var password = document.getElementById('password');
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+            var response = JSON.parse(this.responseText);
+            if (response.access_token) {
+                console.log('Login successful');
+                authenticated(response.access_token);
+            } else {
+                console.log('Login failed');
+                var errorMsg = response.message;
+                if (errorMsg.includes('username') || !email.value) {
+                    var error = document.createElement('div');
+                    error.innerText = '* Invalid email';
+                    error.id = 'email-error';
+                    error.classList.add('error');
+                    email.parentNode.appendChild(error);
+                }
+                if (errorMsg.includes('password') || !password.value) {
+                    var error = document.createElement('div');
+                    error.innerText = '* Invalid password';
+                    error.id = 'password-error';
+                    error.classList.add('error');
+                    password.parentNode.appendChild(error);
+                }
+            }
+        }
+    };
+    xhttp.open("POST", 'http://yclub-privacywallet-api-dev.us-west-2.elasticbeanstalk.com/auth/login', true);
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhttp.send('username=' + (email.value || 'none') + '&password=' + (password.value || 'none') + '&grant_type=password&client_id=null&client_secret=null');
+    clearErrors();
+}
+
+function authenticated(token, option) {
+    document.getElementById('login-option').style.display = 'none';
+    document.getElementById('main-btn').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('banner-option').style.display = 'block';
+    document.getElementById('profile-option').style.display = 'block';
+    document.getElementById('logout-btn').style.display = 'block';
+    if (option && option.displayOnly) return;
+    setStatus({ auth: true, token: token });
 }
 
 function logout(option) {
@@ -63,38 +154,16 @@ function logout(option) {
     document.getElementById('login-btn').style.display = 'block';
     document.getElementById('register-option').style.display = 'block';
     if (!option || !option.displayOnly) {
-        setStatus('auth', false);
+        setStatus({ auth: false, token: null });
     }
-}
-
-function authenticate(option) {
-    document.getElementById('login-option').style.display = 'none';
-    document.getElementById('main-btn').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    document.getElementById('banner-option').style.display = 'block';
-    document.getElementById('profile-option').style.display = 'block';
-    document.getElementById('logout-btn').style.display = 'block';
-    if (!option || !option.displayOnly) {
-        setStatus('auth', true);
-    }
-}
-
-function login() {
-    document.getElementById('login-btn').style.display = 'none';
-    document.getElementById('register-option').style.display = 'none';
-    document.getElementById('main-btn').style.display = 'block';
-    document.getElementById('login-option').style.display = 'block';
-    document.getElementById('email').value = '';
-    document.getElementById('password').value = '';
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    var redeemBtn = document.getElementById('redeem-btn');
+    console.log('popup opened');
     var blockOnBtn = document.getElementById('block-on-btn');
     var blockOffBtn = document.getElementById('block-off-btn');
     var bannerOnBtn = document.getElementById('banner-on-btn');
     var bannerOffBtn = document.getElementById('banner-off-btn');
-    var settingsBtn = document.getElementById('settings-btn');
     var logoutBtn = document.getElementById('logout-btn');
     var loginBtn = document.getElementById('login-btn');
     var mainBtn = document.getElementById('main-btn');
@@ -102,13 +171,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var email = document.getElementById('email');
     var password = document.getElementById('password');
 
+    var redeemBtn = document.getElementById('redeem-btn');
+    var settingsBtn = document.getElementById('settings-btn');
     var opt0Btn = document.getElementById('option0-btn');
     var opt1Btn = document.getElementById('option1-btn');
     var opt2Btn = document.getElementById('option2-btn');
 
     getStatus(function (status) {
         if (status.auth) {
-            authenticate({ displayOnly: true })
+            authenticated(null, { displayOnly: true })
         } else {
             logout({ displayOnly: true })
         }
@@ -124,78 +195,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    authBtn.addEventListener('click', function () {
-        var email = document.getElementById('email');
-        var password = document.getElementById('password');
-        console.log('Email: ' + email.value);
-        console.log('Password: ' + password.value);
-        var emailOk = true;
-        var pwOk = true;
-        var emErr = document.getElementById('email-error');
-        var pwErr = document.getElementById('password-error');
-        if (emErr) email.parentNode.removeChild(emErr);
-        if (pwErr) password.parentNode.removeChild(pwErr);
-        if (email.value !== 'admin') {
-            emailOk = false;
-            var error = document.createElement('div');
-            error.innerText = '* Invalid email';
-            error.id = 'email-error';
-            error.classList.add('font-red');
-            error.style.width = '80%';
-            error.style.textAlign = 'left';
-            error.style.margin = 'auto';
-            email.parentNode.appendChild(error);
-        }
-        if (password.value !== 'password') {
-            pwOk = false;
-            var error = document.createElement('div');
-            error.innerText = '* Invalid password';
-            error.id = 'password-error';
-            error.classList.add('font-red');
-            error.style.width = '80%'
-            error.style.textAlign = 'left'
-            error.style.margin = 'auto'
-            password.parentNode.appendChild(error);
-        }
-        if (emailOk && pwOk) {
-            authenticate();
-        }
+    chrome.runtime.sendMessage({ trigger: 1 }, function (blockCounts) {
+        document.getElementById('page-ads').innerHTML = blockCounts.page;
+        document.getElementById('day-ads').innerHTML = blockCounts.day;
     });
 
-    loginBtn.addEventListener('click', function () {
-        login();
-    });
-
-    logoutBtn.addEventListener('click', function () {
-        logout();
-    });
-
-    mainBtn.addEventListener('click', function () {
-        logout({ displayOnly: true });
-    });
-
-    blockOnBtn.addEventListener('click', function () {
-        adBlocker(true);
-    });
-
-    blockOffBtn.addEventListener('click', function () {
-        adBlocker(false);
-    });
-
-    bannerOnBtn.addEventListener('click', function () {
-        banner(true);
-    });
-
-    bannerOffBtn.addEventListener('click', function () {
-        banner(false);
-    });
-
-    password.addEventListener('keypress', function (keypress) {
-        console.log(keypress.keyCode);
-        if (keypress.keyCode === 13) {
-            authBtn.click();
-        }
-    })
+    authBtn.addEventListener('click', authenticate);
+    loginBtn.addEventListener('click', login);
+    logoutBtn.addEventListener('click', logout);
+    mainBtn.addEventListener('click', backToMain);
+    blockOnBtn.addEventListener('click', adBlocker);
+    blockOffBtn.addEventListener('click', adBlocker);
+    bannerOnBtn.addEventListener('click', banner);
+    bannerOffBtn.addEventListener('click', banner);
+    password.addEventListener('keypress', authOnEnter);
+    email.addEventListener('keypress', authOnEnter);
 
     // opt0Btn.addEventListener('click', function () {
     //     chrome.storage.sync.set({ displayOption: 0 }, function () {
