@@ -1,7 +1,4 @@
 var statusId = 3;
-
-// var pageAdBlocked = 0;
-// var dayAdBlocked = 0;
 var currentTabId;
 var blockCounts = { day: 0 };
 var dateLastBlocked;
@@ -119,9 +116,9 @@ chrome.runtime.onMessage.addListener(
         } else if (request.trigger === 1) {
             sendResponse({ page: blockCounts[currentTabId] || 0, day: blockCounts.day });
         }
-        if (request.trigger === "currentUrl") {
-            console.log(request.currentUrl)
-        }
+        // if (request.trigger === "currentUrl") {
+        //     console.log(request.currentUrl)
+        // }
     }
 );
 
@@ -147,9 +144,7 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 chrome.storage.onChanged.addListener(function (changes, areaName) {
     var auth = changes.auth;
     var adBlock = changes.adBlock;
-    if (auth) {
-        initialize();
-    }
+    if (auth) { initialize(); }
     if (adBlock) {
         if (adBlock.newValue) {
             chrome.webRequest.onBeforeRequest.addListener(blockWebRequest, { urls: blacklist }, ["blocking"]);
@@ -163,5 +158,3 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
 
 // Initialize
 initialize();
-
-
