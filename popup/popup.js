@@ -158,6 +158,10 @@ function logout(option) {
     }
 }
 
+function openRegistration() {
+    chrome.tabs.create({ url: '../pages/registration/registration.html' })
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     console.log('popup opened');
     var blockOnBtn = document.getElementById('block-on-btn');
@@ -170,6 +174,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var authBtn = document.getElementById('auth-btn');
     var email = document.getElementById('email');
     var password = document.getElementById('password');
+    var registerBtn = document.getElementById('register-btn');
+    var signupBtn = document.getElementById('signup-btn');
 
     var redeemBtn = document.getElementById('redeem-btn');
     var settingsBtn = document.getElementById('settings-btn');
@@ -208,24 +214,10 @@ document.addEventListener('DOMContentLoaded', function () {
     blockOffBtn.addEventListener('click', adBlocker);
     bannerOnBtn.addEventListener('click', banner);
     bannerOffBtn.addEventListener('click', banner);
+    registerBtn.addEventListener('click', openRegistration);
+    signupBtn.addEventListener('click', openRegistration);
     password.addEventListener('keypress', authOnEnter);
     email.addEventListener('keypress', authOnEnter);
-
-    // opt0Btn.addEventListener('click', function () {
-    //     chrome.storage.sync.set({ displayOption: 0 }, function () {
-    //         console.log('Display option set to 0');
-    //     });
-    // });
-    // opt1Btn.addEventListener('click', function () {
-    //     chrome.storage.sync.set({ displayOption: 1 }, function () {
-    //         console.log('Display option set to 1');
-    //     });
-    // });
-    // opt2Btn.addEventListener('click', function () {
-    //     chrome.storage.sync.set({ displayOption: 2 }, function () {
-    //         console.log('Display option set to 2');
-    //     });
-    // });
 });
 
 // function changeBackgroundColor(color) {

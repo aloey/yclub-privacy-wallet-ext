@@ -1,0 +1,116 @@
+body {
+    margin: 0px;
+    height: 100vh;
+    font-family: Montserrat, sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.container {
+    margin: 10px;
+}
+
+.parent-height {
+    height: 100%;
+}
+
+.bg-btn {
+    width: 100px;
+    height: 30px;
+    border: none;
+    border-radius: 7px;
+    font-family: Montserrat, sans-serif;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.credential {
+    padding-left: 10px;
+    width: 200px;
+    height: 30px;
+    border: 1px solid #303030;
+    border-radius: 7px;
+    font-family: Montserrat, sans-serif;
+    /* cursor: crosshair; */
+    font-size: 12px;
+}
+
+#header {
+    height: 100px;
+}
+
+#footer {
+    width: 100%;
+    height: 100px;
+    position: fixed;
+    bottom: 0px;
+}
+
+.error {
+    color: #EF807D;
+    width: 200px;
+    text-align: left;
+    margin: auto;
+}
+
+.vertical-spacer {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.valign-middle {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.bg-grey {
+    background-color: #F0F2EF;
+}
+
+.font-light {
+    color: #7D7D7D;
+}
+
+.font-medium {
+    color: #303030;
+}
+
+.font-dark {
+    color: #000000;
+}
+
+.font-yellow {
+    color: #F5A623;
+}
+
+.font-blue {
+    color: #4A90E2;
+}
+
+.font-red {
+    color: #EF807D;
+}
+
+.font-white {
+    color: #FFFFFF;
+}
+
+.bg-yellow {
+    background: #F5A623;
+}
+
+.center-align {
+    text-align: center;
+}
+
+.left-align {
+    text-align: left;
+}
+
+.right-align {
+    text-align: right;
+}
