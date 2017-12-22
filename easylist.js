@@ -1,4 +1,4 @@
-var blacklist = [
+var easylist = [
     '*://*.0.0.0.0/*',
     '*://*.lb.usemaxserver.de/*',
     '*://*.tracking.klickthru.com/*',
