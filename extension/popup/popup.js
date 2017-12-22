@@ -1,10 +1,12 @@
 function getStatus(callback) {
-    chrome.storage.sync.get(['auth', 'adBlock', 'banner'], function (items) {
+    chrome.storage.sync.get(['auth', 'adBlock', 'banner', 'privacy', 'malware'], function (items) {
         if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
         var status = {
             auth: items.auth,
             adBlock: items.adBlock || typeof items.adBlock === 'undefined',
-            banner: items.banner || typeof items.banner === 'undefined'
+            banner: items.banner || typeof items.banner === 'undefined',
+            privacy: items.privacy || typeof items.privacy === 'undefined',
+            malware: items.malware || typeof items.malware === 'undefined',
         };
         if (callback) callback(status);
     });
@@ -20,45 +22,75 @@ function setStatus(status, callback) {
     });
 }
 
-function adBlocker() {
-    var blockOnBtn = document.getElementById('block-on-btn');
-    var blockOffBtn = document.getElementById('block-off-btn');
-    var status;
-    var statusChange;
-    if (this.id === blockOnBtn.id) {
-        status = true;
-        blockOnBtn.style.display = 'none';
-        blockOffBtn.style.display = 'block';
-        statusChange = 2;
-    } else if (this.id === blockOffBtn.id) {
-        status = false;
-        blockOffBtn.style.display = 'none';
-        blockOnBtn.style.display = 'block';
-        statusChange = -2;
-    }
-    chrome.runtime.sendMessage({ trigger: 0, statusChange: statusChange }, function () {
-        setStatus({ adBlock: status });
-    });
-}
-
 function banner() {
     var bannerOnBtn = document.getElementById('banner-on-btn');
     var bannerOffBtn = document.getElementById('banner-off-btn');
     var status;
-    var statusChange;
     if (this.id === bannerOnBtn.id) {
         status = true;
         bannerOnBtn.style.display = 'none';
         bannerOffBtn.style.display = 'block';
-        statusChange = 1;
     } else if (this.id === bannerOffBtn.id) {
         status = false;
         bannerOffBtn.style.display = 'none';
         bannerOnBtn.style.display = 'block';
-        statusChange = -1;
     }
-    chrome.runtime.sendMessage({ trigger: 0, statusChange: statusChange }, function () {
+    chrome.runtime.sendMessage({ trigger: 0, key: 'banner', value: status }, function () {
         setStatus({ banner: status });
+    });
+}
+
+function adBlocker() {
+    var blockOnBtn = document.getElementById('block-on-btn');
+    var blockOffBtn = document.getElementById('block-off-btn');
+    var status;
+    if (this.id === blockOnBtn.id) {
+        status = true;
+        blockOnBtn.style.display = 'none';
+        blockOffBtn.style.display = 'block';
+    } else if (this.id === blockOffBtn.id) {
+        status = false;
+        blockOffBtn.style.display = 'none';
+        blockOnBtn.style.display = 'block';
+    }
+    chrome.runtime.sendMessage({ trigger: 0, key: 'adBlock', value: status }, function () {
+        setStatus({ adBlock: status });
+    });
+}
+
+function privacy() {
+    var privacyOnBtn = document.getElementById('privacy-on-btn');
+    var privacyOffBtn = document.getElementById('privacy-off-btn');
+    var status;
+    if (this.id === privacyOnBtn.id) {
+        status = true;
+        privacyOnBtn.style.display = 'none';
+        privacyOffBtn.style.display = 'block';
+    } else if (this.id === privacyOffBtn.id) {
+        status = false;
+        privacyOffBtn.style.display = 'none';
+        privacyOnBtn.style.display = 'block';
+    }
+    chrome.runtime.sendMessage({ trigger: 0, key: 'privacy', value: status }, function () {
+        setStatus({ privacy: status });
+    });
+}
+
+function malware() {
+    var malwareOnBtn = document.getElementById('malware-on-btn');
+    var malwareOffBtn = document.getElementById('malware-off-btn');
+    var status;
+    if (this.id === malwareOnBtn.id) {
+        status = true;
+        malwareOnBtn.style.display = 'none';
+        malwareOffBtn.style.display = 'block';
+    } else if (this.id === malwareOffBtn.id) {
+        status = false;
+        malwareOffBtn.style.display = 'none';
+        malwareOnBtn.style.display = 'block';
+    }
+    chrome.runtime.sendMessage({ trigger: 0, key: 'malware', value: status }, function () {
+        setStatus({ malware: status });
     });
 }
 
@@ -138,6 +170,8 @@ function authenticated(token, option) {
     document.getElementById('main-btn').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     document.getElementById('banner-option').style.display = 'block';
+    document.getElementById('privacy-option').style.display = 'block';
+    document.getElementById('malware-option').style.display = 'block';
     document.getElementById('profile-option').style.display = 'block';
     document.getElementById('logout-btn').style.display = 'block';
     if (option && option.displayOnly) return;
@@ -168,6 +202,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var blockOffBtn = document.getElementById('block-off-btn');
     var bannerOnBtn = document.getElementById('banner-on-btn');
     var bannerOffBtn = document.getElementById('banner-off-btn');
+    var privacyOnBtn = document.getElementById('privacy-on-btn');
+    var privacyOffBtn = document.getElementById('privacy-off-btn');
+    var malwareOnBtn = document.getElementById('malware-on-btn');
+    var malwareOffBtn = document.getElementById('malware-off-btn');
     var logoutBtn = document.getElementById('logout-btn');
     var loginBtn = document.getElementById('login-btn');
     var mainBtn = document.getElementById('main-btn');
@@ -199,6 +237,16 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             bannerOnBtn.style.display = 'block';
         }
+        if (status.privacy) {
+            privacyOffBtn.style.display = 'block';
+        } else {
+            privacyOnBtn.style.display = 'block';
+        }
+        if (status.malware) {
+            malwareOffBtn.style.display = 'block';
+        } else {
+            malwareOnBtn.style.display = 'block';
+        }
     });
 
     chrome.runtime.sendMessage({ trigger: 1 }, function (blockCounts) {
@@ -214,6 +262,10 @@ document.addEventListener('DOMContentLoaded', function () {
     blockOffBtn.addEventListener('click', adBlocker);
     bannerOnBtn.addEventListener('click', banner);
     bannerOffBtn.addEventListener('click', banner);
+    privacyOnBtn.addEventListener('click', privacy);
+    privacyOffBtn.addEventListener('click', privacy);
+    malwareOnBtn.addEventListener('click', malware);
+    malwareOffBtn.addEventListener('click', malware);
     registerBtn.addEventListener('click', openRegistration);
     signupBtn.addEventListener('click', openRegistration);
     password.addEventListener('keypress', authOnEnter);

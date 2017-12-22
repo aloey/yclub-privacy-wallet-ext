@@ -1,0 +1,56 @@
+{
+    "manifest_version": 2,
+    "name": "Privacy Wallet",
+    "description": "This extension allows the user to claim what is deserved.",
+    "version": "1.0",
+    "browser_action": {
+        "default_icon": {
+            "16": "images/pwoff16.png",
+            "24": "images/pwoff24.png",
+            "32": "images/pwoff32.png",
+            "64": "images/pwoff64.png",
+            "128": "images/pwoff128.png"
+        },
+        "default_popup": "popup/popup.html",
+        "default_title": "Privacy Wallet"
+    },
+    "background": {
+        "scripts": [
+            "adblocker/common.js",
+            "adblocker/coreUtils.js",
+            "adblocker/events.js",
+            "adblocker/punycode.js",
+            "adblocker/tldjs.js",
+            "adblocker/filterNotifier.js",
+            "adblocker/filterClasses.js",
+            "adblocker/matcher.js",
+            "adblocker/url.js",
+            "adblocker/adblocker.js",
+            "adblocker/background.js"
+        ],
+        "persistent": true
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "css": [],
+            "js": [
+                "jquery-3.2.1.min.js",
+                "contentscript.js"
+            ],
+            "run_at": "document_end"
+        }
+    ],
+    "permissions": [
+        "activeTab",
+        "tabs",
+        "storage",
+        "contextMenus",
+        "webRequest",
+        "webRequestBlocking",
+        "http://*/",
+        "https://*/"
+    ]
+}
