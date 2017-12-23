@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "name": "Privacy Wallet",
+    "name": "__MSG_ext_name__",
     "description": "This extension allows the user to claim what is deserved.",
     "version": "1.0",
     "browser_action": {
@@ -12,11 +12,11 @@
             "128": "images/pwoff128.png"
         },
         "default_popup": "popup/popup.html",
-        "default_title": "Privacy Wallet"
+        "default_title": "__MSG_ext_name__"
     },
+    "default_locale": "en",
     "background": {
         "scripts": [
-            "pw.js",
             "background.js"
         ],
         "persistent": true

@@ -1,0 +1,142 @@
+{
+    "ext_name": {
+        "message": "Privacy Wallet",
+        "description": ""
+    },
+    "signup_title": {
+        "message": "지금 가입하고 다음의 혜택을 누리세요",
+        "description": ""
+    },
+    "signup_msg_0": {
+        "message": "인터넷 서핑을 하면서 돈을 버세요",
+        "description": ""
+    },
+    "signup_msg_1": {
+        "message": "선택된 광고만 보시고 더 큰 보상을! (언제든지 비활성화 하실수 있어요)",
+        "description": ""
+    },
+    "signup_msg_2": {
+        "message": "We protect your privacy by not collecting or saving any personal information (eg. name, phone number, exact address)",
+        "description": ""
+    },
+    "signup_msg_3": {
+        "message": "We require email address only for verification and password recovery purposes",
+        "description": ""
+    },
+    "signup_link": {
+        "message": "가입하기",
+        "description": ""
+    },
+    "signup_button": {
+        "message": "회원가입",
+        "description": ""
+    },
+    "login_title": {
+        "message": "멤버 로그인",
+        "description": ""
+    },
+    "no_account_msg": {
+        "message": "아직 회원이 아니세요?",
+        "description": ""
+    },
+    "login_link": {
+        "message": "로그인",
+        "description": ""
+    },
+    "email_ph": {
+        "message": "이메일",
+        "description": ""
+    },
+    "password_ph": {
+        "message": "비밀번호",
+        "description": ""
+    },
+    "login_button": {
+        "message": "로그인",
+        "description": ""
+    },
+    "main_link": {
+        "message": "메인으로",
+        "description": ""
+    },
+    "logout_link": {
+        "message": "로그아웃",
+        "description": ""
+    },
+    "redeem_link": {
+        "message": "Redeem",
+        "description": ""
+    },
+    "activate_link": {
+        "message": "활성화",
+        "description": ""
+    },
+    "deactivate_link": {
+        "message": "비활성화",
+        "description": ""
+    },
+    "share_msg": {
+        "message": "셰어를 하면 더 큰 보상이!",
+        "description": ""
+    },
+    "currency_symbol": {
+        "message": "₩",
+        "description": ""
+    },
+    "today": {
+        "message": "오늘: ",
+        "description": ""
+    },
+    "banner_title": {
+        "message": "배너 광고",
+        "description": ""
+    },
+    "earned_total_msg": {
+        "message": "Total amount you earned up to date",
+        "description": ""
+    },
+    "redeemed_total_msg": {
+        "message": "Total amount you have redeemed",
+        "description": ""
+    },
+    "more_info_msg": {
+        "message": "더 궁금하세요?",
+        "description": ""
+    },
+    "report_link": {
+        "message": "리포트 보기",
+        "description": ""
+    },
+    "profile_title": {
+        "message": "프로필",
+        "description": ""
+    },
+    "update_button": {
+        "message": "업데이트",
+        "description": ""
+    },
+    "current_status_msg": {
+        "message": "당신의 등급",
+        "description": ""
+    },
+    "status_regular": {
+        "message": "일반",
+        "description": ""
+    },
+    "change_setting_msg": {
+        "message": "세팅을 바꾸고 싶으세요?",
+        "description": ""
+    },
+    "change_setting_button": {
+        "message": "수정하기",
+        "description": ""
+    },
+    "report_issue_msg": {
+        "message": "문제가 있나요?",
+        "description": ""
+    },
+    "report_issue_button": {
+        "message": "제보하기",
+        "description": ""
+    }
+}

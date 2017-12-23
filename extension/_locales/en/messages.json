@@ -1,0 +1,142 @@
+{
+    "ext_name": {
+        "message": "Privacy Wallet",
+        "description": ""
+    },
+    "signup_title": {
+        "message": "Sign up now to unlock the following benefits",
+        "description": ""
+    },
+    "signup_msg_0": {
+        "message": "Earn money while you surf the internet",
+        "description": ""
+    },
+    "signup_msg_1": {
+        "message": "Receive only solicited ads to earn more! (You may turn off anytime or customize)",
+        "description": ""
+    },
+    "signup_msg_2": {
+        "message": "We protect your privacy by not collecting or saving any personal information (eg. name, phone number, exact address)",
+        "description": ""
+    },
+    "signup_msg_3": {
+        "message": "We require email address only for verification and password recovery purposes",
+        "description": ""
+    },
+    "signup_link": {
+        "message": "Sign Up",
+        "description": ""
+    },
+    "signup_button": {
+        "message": "SIGN UP",
+        "description": ""
+    },
+    "login_title": {
+        "message": "Member Login",
+        "description": ""
+    },
+    "no_account_msg": {
+        "message": "Don't have account yet?",
+        "description": ""
+    },
+    "login_link": {
+        "message": "Login",
+        "description": ""
+    },
+    "email_ph": {
+        "message": "Email",
+        "description": ""
+    },
+    "password_ph": {
+        "message": "Password",
+        "description": ""
+    },
+    "login_button": {
+        "message": "LOG IN",
+        "description": ""
+    },
+    "main_link": {
+        "message": "Main",
+        "description": ""
+    },
+    "logout_link": {
+        "message": "Logout",
+        "description": ""
+    },
+    "redeem_link": {
+        "message": "Redeem",
+        "description": ""
+    },
+    "activate_link": {
+        "message": "Activate",
+        "description": ""
+    },
+    "deactivate_link": {
+        "message": "Deactivate",
+        "description": ""
+    },
+    "share_msg": {
+        "message": "Share with benefits",
+        "description": ""
+    },
+    "currency_symbol": {
+        "message": "US $$",
+        "description": ""
+    },
+    "today": {
+        "message": "Today: ",
+        "description": ""
+    },
+    "banner_title": {
+        "message": "Banner Ads",
+        "description": ""
+    },
+    "earned_total_msg": {
+        "message": "Total amount you earned up to date",
+        "description": ""
+    },
+    "redeemed_total_msg": {
+        "message": "Total amount you have redeemed",
+        "description": ""
+    },
+    "more_info_msg": {
+        "message": "Want to know more?",
+        "description": ""
+    },
+    "report_link": {
+        "message": "See Report",
+        "description": ""
+    },
+    "profile_title": {
+        "message": "Profile",
+        "description": ""
+    },
+    "update_button": {
+        "message": "Update",
+        "description": ""
+    },
+    "current_status_msg": {
+        "message": "Your current status",
+        "description": ""
+    },
+    "status_regular": {
+        "message": "Regular",
+        "description": ""
+    },
+    "change_setting_msg": {
+        "message": "Do you want to change settings?",
+        "description": ""
+    },
+    "change_setting_button": {
+        "message": "Change Settings",
+        "description": ""
+    },
+    "report_issue_msg": {
+        "message": "Are you experiencing any issue?",
+        "description": ""
+    },
+    "report_issue_button": {
+        "message": "Report Issue",
+        "description": ""
+    }
+}
