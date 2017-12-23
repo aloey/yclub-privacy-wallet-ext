@@ -1,12 +1,12 @@
 function getStatus(callback) {
-    chrome.storage.sync.get(['auth', 'adBlock', 'banner', 'privacy', 'malware'], function (items) {
+    chrome.storage.sync.get(['auth', 'banner'/* , 'adBlock', 'privacy', 'malware' */], function (items) {
         if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
         var status = {
             auth: items.auth,
-            adBlock: items.adBlock || typeof items.adBlock === 'undefined',
             banner: items.banner || typeof items.banner === 'undefined',
-            privacy: items.privacy || typeof items.privacy === 'undefined',
-            malware: items.malware || typeof items.malware === 'undefined',
+            // adBlock: items.adBlock || typeof items.adBlock === 'undefined',
+            // privacy: items.privacy || typeof items.privacy === 'undefined',
+            // malware: items.malware || typeof items.malware === 'undefined',
         };
         if (callback) callback(status);
     });
@@ -116,9 +116,7 @@ function login() {
 }
 
 function authOnEnter(keypress) {
-    if (keypress.keyCode === 13) {
-        document.getElementById('auth-btn').click();
-    }
+    if (keypress.keyCode === 13) { document.getElementById('auth-btn').click(); }
 }
 
 function backToMain() {
@@ -170,8 +168,8 @@ function authenticated(token, option) {
     document.getElementById('main-btn').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     document.getElementById('banner-option').style.display = 'block';
-    document.getElementById('privacy-option').style.display = 'block';
-    document.getElementById('malware-option').style.display = 'block';
+    // document.getElementById('privacy-option').style.display = 'block';
+    // document.getElementById('malware-option').style.display = 'block';
     document.getElementById('profile-option').style.display = 'block';
     document.getElementById('logout-btn').style.display = 'block';
     if (option && option.displayOnly) return;
@@ -197,23 +195,22 @@ function openRegistration() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('popup opened');
-    var blockOnBtn = document.getElementById('block-on-btn');
-    var blockOffBtn = document.getElementById('block-off-btn');
-    var bannerOnBtn = document.getElementById('banner-on-btn');
-    var bannerOffBtn = document.getElementById('banner-off-btn');
-    var privacyOnBtn = document.getElementById('privacy-on-btn');
-    var privacyOffBtn = document.getElementById('privacy-off-btn');
-    var malwareOnBtn = document.getElementById('malware-on-btn');
-    var malwareOffBtn = document.getElementById('malware-off-btn');
-    var logoutBtn = document.getElementById('logout-btn');
-    var loginBtn = document.getElementById('login-btn');
-    var mainBtn = document.getElementById('main-btn');
-    var authBtn = document.getElementById('auth-btn');
-    var email = document.getElementById('email');
-    var password = document.getElementById('password');
     var registerBtn = document.getElementById('register-btn');
     var signupBtn = document.getElementById('signup-btn');
+    var loginBtn = document.getElementById('login-btn');
+    var mainBtn = document.getElementById('main-btn');
+    var email = document.getElementById('email');
+    var password = document.getElementById('password');
+    var authBtn = document.getElementById('auth-btn');
+    var logoutBtn = document.getElementById('logout-btn');
+    var bannerOnBtn = document.getElementById('banner-on-btn');
+    var bannerOffBtn = document.getElementById('banner-off-btn');
+    // var blockOnBtn = document.getElementById('block-on-btn');
+    // var blockOffBtn = document.getElementById('block-off-btn');
+    // var privacyOnBtn = document.getElementById('privacy-on-btn');
+    // var privacyOffBtn = document.getElementById('privacy-off-btn');
+    // var malwareOnBtn = document.getElementById('malware-on-btn');
+    // var malwareOffBtn = document.getElementById('malware-off-btn');
 
     var redeemBtn = document.getElementById('redeem-btn');
     var settingsBtn = document.getElementById('settings-btn');
@@ -222,54 +219,39 @@ document.addEventListener('DOMContentLoaded', function () {
     var opt2Btn = document.getElementById('option2-btn');
 
     getStatus(function (status) {
-        if (status.auth) {
-            authenticated(null, { displayOnly: true })
-        } else {
-            logout({ displayOnly: true })
-        }
-        if (status.adBlock) {
-            blockOffBtn.style.display = 'block';
-        } else {
-            blockOnBtn.style.display = 'block';
-        }
-        if (status.banner) {
-            bannerOffBtn.style.display = 'block';
-        } else {
-            bannerOnBtn.style.display = 'block';
-        }
-        if (status.privacy) {
-            privacyOffBtn.style.display = 'block';
-        } else {
-            privacyOnBtn.style.display = 'block';
-        }
-        if (status.malware) {
-            malwareOffBtn.style.display = 'block';
-        } else {
-            malwareOnBtn.style.display = 'block';
-        }
+        if (status.auth) { authenticated(null, { displayOnly: true }); }
+        else { logout({ displayOnly: true }); }
+        if (status.banner) { bannerOffBtn.style.display = 'block'; }
+        else { bannerOnBtn.style.display = 'block'; }
+        // if (status.adBlock) { blockOffBtn.style.display = 'block'; }
+        // else { blockOnBtn.style.display = 'block'; }
+        // if (status.privacy) { privacyOffBtn.style.display = 'block'; }
+        // else { privacyOnBtn.style.display = 'block'; }
+        // if (status.malware) { malwareOffBtn.style.display = 'block'; }
+        // else { malwareOnBtn.style.display = 'block'; }
     });
 
-    chrome.runtime.sendMessage({ trigger: 1 }, function (blockCounts) {
-        document.getElementById('page-ads').innerHTML = blockCounts.page;
-        document.getElementById('day-ads').innerHTML = blockCounts.day;
-    });
+    // chrome.runtime.sendMessage({ trigger: 1 }, function (blockCounts) {
+    //     document.getElementById('page-ads').innerHTML = blockCounts.page;
+    //     document.getElementById('day-ads').innerHTML = blockCounts.day;
+    // });
 
-    authBtn.addEventListener('click', authenticate);
-    loginBtn.addEventListener('click', login);
-    logoutBtn.addEventListener('click', logout);
-    mainBtn.addEventListener('click', backToMain);
-    blockOnBtn.addEventListener('click', adBlocker);
-    blockOffBtn.addEventListener('click', adBlocker);
-    bannerOnBtn.addEventListener('click', banner);
-    bannerOffBtn.addEventListener('click', banner);
-    privacyOnBtn.addEventListener('click', privacy);
-    privacyOffBtn.addEventListener('click', privacy);
-    malwareOnBtn.addEventListener('click', malware);
-    malwareOffBtn.addEventListener('click', malware);
     registerBtn.addEventListener('click', openRegistration);
     signupBtn.addEventListener('click', openRegistration);
-    password.addEventListener('keypress', authOnEnter);
+    loginBtn.addEventListener('click', login);
+    mainBtn.addEventListener('click', backToMain);
     email.addEventListener('keypress', authOnEnter);
+    password.addEventListener('keypress', authOnEnter);
+    authBtn.addEventListener('click', authenticate);
+    logoutBtn.addEventListener('click', logout);
+    bannerOnBtn.addEventListener('click', banner);
+    bannerOffBtn.addEventListener('click', banner);
+    // blockOnBtn.addEventListener('click', adBlocker);
+    // blockOffBtn.addEventListener('click', adBlocker);
+    // privacyOnBtn.addEventListener('click', privacy);
+    // privacyOffBtn.addEventListener('click', privacy);
+    // malwareOnBtn.addEventListener('click', malware);
+    // malwareOffBtn.addEventListener('click', malware);
 });
 
 // function changeBackgroundColor(color) {

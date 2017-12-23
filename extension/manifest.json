@@ -16,17 +16,8 @@
     },
     "background": {
         "scripts": [
-            "adblocker/common.js",
-            "adblocker/coreUtils.js",
-            "adblocker/events.js",
-            "adblocker/punycode.js",
-            "adblocker/tldjs.js",
-            "adblocker/filterNotifier.js",
-            "adblocker/filterClasses.js",
-            "adblocker/matcher.js",
-            "adblocker/url.js",
-            "adblocker/adblocker.js",
-            "adblocker/background.js"
+            "pw.js",
+            "background.js"
         ],
         "persistent": true
     },
@@ -37,7 +28,6 @@
             ],
             "css": [],
             "js": [
-                "jquery-3.2.1.min.js",
                 "contentscript.js"
             ],
             "run_at": "document_end"
