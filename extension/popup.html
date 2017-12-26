@@ -4,16 +4,19 @@
 <head>
     <title>Privacy Wallet Popup</title>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="popup.css">
-    <script src="popup.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles/popup.css">
+    <script src="scripts/common.js"></script>
+    <script src="scripts/popup.js"></script>
 </head>
 
 <body>
     <div id="header">
-        <img id="logo" src="../images/pwTitle.png">
+        <img id="logo" class="valign-middle" src="images/pw24.png">
+        <span id="popup-title" class="i18n i18n_popup_title valign-middle"></span>
         <input id="login-btn" class="btn underline header-btn i18n i18n_login_link" type="button" style="display: none;">
         <input id="logout-btn" class="btn underline header-btn i18n i18n_logout_link" type="button" style="display: none;">
         <input id="main-btn" class="btn underline header-btn i18n i18n_main_link" type="button" style="display: none;">
+        <span class="parent-height valign-middle"></span>
         <hr class="header-rule">
     </div>
     <div id="dashboard" class="container" style="display: none;">
@@ -55,7 +58,7 @@
         </div>
         <hr class="clear">
     </div>
-    <!-- <div id="adblocker-option" class="container" style="display: none;">
+    <div id="adblocker-option" class="container" style="display: none;">
         <div>
             <input id="block-on-btn" class="btn underline font-medium pull-right" type="button" value="Activate" style="display: none;">
             <input id="block-off-btn" class="btn underline font-medium pull-right" type="button" value="Deactivate" style="display: none;">
@@ -67,7 +70,7 @@
         </div>
         <div>
             <span id="day-ads" class="font-dark pull-right">0</span>
-            <label class="font-light">Number of blocked ads today</label>
+            <label class="font-light">Number of blocked ads up to date</label>
         </div>
         <div class="right-align">
             <span class="font-light italic">Want to allow ads on this site?</span>
@@ -87,11 +90,19 @@
         </div>
         <div>
             <span class="font-dark pull-right">56</span>
-            <label class="font-light">Number of blocked tracking attempts today</label>
+            <label class="font-light">Number of blocked tracking attempts on this page</label>
         </div>
         <div>
             <span class="font-dark pull-right">565</span>
             <label class="font-light">Number of blocked tracking attempts up to date</label>
+        </div>
+        <div class="right-align">
+            <span class="font-light italic">Want to turn off on this site?</span>
+            <input id="see-report-btn" class="btn underline font-light pull-right" type="button" value="Set Whitelist">
+        </div>
+        <div class="right-align">
+            <span class="font-light italic">Want to report violoation on this site?</span>
+            <input id="see-report-btn" class="btn underline font-light pull-right" type="button" value="Report this Page">
         </div>
         <hr class="clear">
     </div>
@@ -103,14 +114,22 @@
         </div>
         <div>
             <span class="font-dark pull-right">56</span>
-            <label class="font-light">Number of blocked malicious attempts today</label>
+            <label class="font-light">Number of blocked malicious attempts on this page</label>
         </div>
         <div>
             <span class="font-dark pull-right">565</span>
             <label class="font-light">Number of blocked malicious attempts up to date</label>
         </div>
+        <div class="right-align">
+            <span class="font-light italic">Want to turn off on this site?</span>
+            <input id="see-report-btn" class="btn underline font-light pull-right" type="button" value="Set Whitelist">
+        </div>
+        <div class="right-align">
+            <span class="font-light italic">Want to report malware on this site?</span>
+            <input id="see-report-btn" class="btn underline font-light pull-right" type="button" value="Report this Page">
+        </div>
         <hr class="clear">
-    </div> -->
+    </div>
     <div id="profile-option" class="container" style="display: none;">
         <div>
             <input id="update-btn" class="btn underline font-medium pull-right i18n i18n_update_button" type="button">

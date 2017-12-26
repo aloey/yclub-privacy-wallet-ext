@@ -1,12 +1,12 @@
 function getStatus(callback) {
-    chrome.storage.sync.get(['auth', 'banner'/* , 'adBlock', 'privacy', 'malware' */], function (items) {
+    chrome.storage.sync.get(['auth', 'banner', 'adBlock', 'privacy', 'malware'], function (items) {
         if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
         var status = {
             auth: items.auth,
             banner: items.banner || typeof items.banner === 'undefined',
-            // adBlock: items.adBlock || typeof items.adBlock === 'undefined',
-            // privacy: items.privacy || typeof items.privacy === 'undefined',
-            // malware: items.malware || typeof items.malware === 'undefined',
+            adBlock: items.adBlock || typeof items.adBlock === 'undefined',
+            privacy: items.privacy || typeof items.privacy === 'undefined',
+            malware: items.malware || typeof items.malware === 'undefined',
         };
         if (callback) callback(status);
     });
@@ -167,9 +167,10 @@ function authenticated(token, option) {
     document.getElementById('login-option').style.display = 'none';
     document.getElementById('main-btn').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('adblocker-option').style.display = 'block';
     document.getElementById('banner-option').style.display = 'block';
-    // document.getElementById('privacy-option').style.display = 'block';
-    // document.getElementById('malware-option').style.display = 'block';
+    document.getElementById('privacy-option').style.display = 'block';
+    document.getElementById('malware-option').style.display = 'block';
     document.getElementById('profile-option').style.display = 'block';
     document.getElementById('logout-btn').style.display = 'block';
     if (option && option.displayOnly) return;
@@ -190,30 +191,6 @@ function logout(option) {
     }
 }
 
-function openRegistration() {
-    chrome.tabs.create({ url: '../pages/registration/registration.html' })
-}
-
-function i18n() {
-    var i18nElems = document.getElementsByClassName('i18n');
-    var numElems = i18nElems.length;
-    while (numElems) {
-        var elem = i18nElems[numElems - 1];
-        var match = elem.className.match(/i18n_([\S]*)/)[1];
-        if (match) {
-            var type = match.substring(match.lastIndexOf('_') + 1);
-            if (type === 'button' || type === 'link') {
-                elem.value = chrome.i18n.getMessage(match);
-            } else if (type === 'ph') {
-                elem.placeholder = chrome.i18n.getMessage(match);
-            } else {
-                elem.innerHTML = chrome.i18n.getMessage(match);
-            }
-        }
-        numElems -= 1;
-    }
-}
-
 document.addEventListener('DOMContentLoaded', function () {
     i18n();
 
@@ -227,12 +204,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var logoutBtn = document.getElementById('logout-btn');
     var bannerOnBtn = document.getElementById('banner-on-btn');
     var bannerOffBtn = document.getElementById('banner-off-btn');
-    // var blockOnBtn = document.getElementById('block-on-btn');
-    // var blockOffBtn = document.getElementById('block-off-btn');
-    // var privacyOnBtn = document.getElementById('privacy-on-btn');
-    // var privacyOffBtn = document.getElementById('privacy-off-btn');
-    // var malwareOnBtn = document.getElementById('malware-on-btn');
-    // var malwareOffBtn = document.getElementById('malware-off-btn');
+    var blockOnBtn = document.getElementById('block-on-btn');
+    var blockOffBtn = document.getElementById('block-off-btn');
+    var privacyOnBtn = document.getElementById('privacy-on-btn');
+    var privacyOffBtn = document.getElementById('privacy-off-btn');
+    var malwareOnBtn = document.getElementById('malware-on-btn');
+    var malwareOffBtn = document.getElementById('malware-off-btn');
 
     var redeemBtn = document.getElementById('redeem-btn');
     var settingsBtn = document.getElementById('settings-btn');
@@ -245,18 +222,18 @@ document.addEventListener('DOMContentLoaded', function () {
         else { logout({ displayOnly: true }); }
         if (status.banner) { bannerOffBtn.style.display = 'block'; }
         else { bannerOnBtn.style.display = 'block'; }
-        // if (status.adBlock) { blockOffBtn.style.display = 'block'; }
-        // else { blockOnBtn.style.display = 'block'; }
-        // if (status.privacy) { privacyOffBtn.style.display = 'block'; }
-        // else { privacyOnBtn.style.display = 'block'; }
-        // if (status.malware) { malwareOffBtn.style.display = 'block'; }
-        // else { malwareOnBtn.style.display = 'block'; }
+        if (status.adBlock) { blockOffBtn.style.display = 'block'; }
+        else { blockOnBtn.style.display = 'block'; }
+        if (status.privacy) { privacyOffBtn.style.display = 'block'; }
+        else { privacyOnBtn.style.display = 'block'; }
+        if (status.malware) { malwareOffBtn.style.display = 'block'; }
+        else { malwareOnBtn.style.display = 'block'; }
     });
 
-    // chrome.runtime.sendMessage({ trigger: 1 }, function (blockCounts) {
-    //     document.getElementById('page-ads').innerHTML = blockCounts.page;
-    //     document.getElementById('day-ads').innerHTML = blockCounts.day;
-    // });
+    chrome.runtime.sendMessage({ trigger: 1 }, function (blockCounts) {
+        document.getElementById('page-ads').innerHTML = blockCounts.page;
+        document.getElementById('day-ads').innerHTML = blockCounts.day;
+    });
 
     registerBtn.addEventListener('click', openRegistration);
     signupBtn.addEventListener('click', openRegistration);
@@ -268,12 +245,12 @@ document.addEventListener('DOMContentLoaded', function () {
     logoutBtn.addEventListener('click', logout);
     bannerOnBtn.addEventListener('click', banner);
     bannerOffBtn.addEventListener('click', banner);
-    // blockOnBtn.addEventListener('click', adBlocker);
-    // blockOffBtn.addEventListener('click', adBlocker);
-    // privacyOnBtn.addEventListener('click', privacy);
-    // privacyOffBtn.addEventListener('click', privacy);
-    // malwareOnBtn.addEventListener('click', malware);
-    // malwareOffBtn.addEventListener('click', malware);
+    blockOnBtn.addEventListener('click', adBlocker);
+    blockOffBtn.addEventListener('click', adBlocker);
+    privacyOnBtn.addEventListener('click', privacy);
+    privacyOffBtn.addEventListener('click', privacy);
+    malwareOnBtn.addEventListener('click', malware);
+    malwareOffBtn.addEventListener('click', malware);
 });
 
 // function changeBackgroundColor(color) {

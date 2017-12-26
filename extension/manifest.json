@@ -11,14 +11,12 @@
             "64": "images/pwoff64.png",
             "128": "images/pwoff128.png"
         },
-        "default_popup": "popup/popup.html",
+        "default_popup": "popup.html",
         "default_title": "__MSG_ext_name__"
     },
     "default_locale": "en",
     "background": {
-        "scripts": [
-            "background.js"
-        ],
+        "page": "background.html",
         "persistent": true
     },
     "content_scripts": [
@@ -28,7 +26,8 @@
             ],
             "css": [],
             "js": [
-                "contentscript.js"
+                "lib/jquery-3.2.1.min.js",
+                "scripts/contentscript.js"
             ],
             "run_at": "document_end"
         }

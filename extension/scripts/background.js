@@ -19,11 +19,11 @@ var icons = {
         128: 'images/pw128.png'
     },
     1: {
-        16: 'images/pw16.png',
-        24: 'images/pw24.png',
-        32: 'images/pw32.png',
-        64: 'images/pw64.png',
-        128: 'images/pw128.png'
+        16: 'images/pwna16.png',
+        24: 'images/pwna24.png',
+        32: 'images/pwna32.png',
+        64: 'images/pwna64.png',
+        128: 'images/pwna128.png'
     },
     2: {
         16: 'images/pwnb16.png',
@@ -53,13 +53,13 @@ function getStatus(callback) {
     chrome.storage.sync.get(['auth', 'adBlock', 'banner', 'dayAdBlocked', 'dateLastBlocked', 'privacy', 'malware'], function (items) {
         if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
         statuses.banner = items.banner || typeof items.banner === 'undefined';
-        // statuses.adBlock = items.adBlock || typeof items.adBlock === 'undefined;
-        // statuses.privacy = items.privacy || typeof items.privacy === 'undefined;
-        // statuses.malware = items.malware || typeof items.malware === 'undefined;
+        statuses.adBlock = items.adBlock || typeof items.adBlock === 'undefined';
+        statuses.privacy = items.privacy || typeof items.privacy === 'undefined';
+        statuses.malware = items.malware || typeof items.malware === 'undefined';
         var status = {
             auth: items.auth,
-            // dayAdBlocked: items.dayAdBlocked || 0,
-            // dateLastBlocked: items.dateLastBlocked
+            dayAdBlocked: items.dayAdBlocked || 0,
+            dateLastBlocked: items.dateLastBlocked
         };
         if (callback) callback(status);
     });
@@ -85,16 +85,13 @@ function syncBlockCounts() {
 
 function initialize() {
     getStatus(function (status) {
-        // var adBlock = statuses.adBlock;
-        // incrementDayBlockCount(status.dateLastBlocked, status.dayAdBlocked);
-        // console.log('Ads blocked today: ' + blockCounts.day);
-        // if (adBlock) {
-        //     chrome.webRequest.onBeforeRequest.addListener((blockWebRequest), { urls: ['http://*/*'] }, ["blocking"]);
-        // }
-        // console.log('Ad blocker: ' + ((adBlock) ? 'ON' : 'OFF'));
-
-        console.log(statuses.banner)
-        console.log(status.auth)
+        var adBlock = statuses.adBlock;
+        incrementDayBlockCount(status.dateLastBlocked, status.dayAdBlocked);
+        console.log('Ads blocked today: ' + blockCounts.day);
+        if (adBlock) {
+            chrome.webRequest.onBeforeRequest.addListener((blockWebRequest), { urls: blacklist }, ["blocking"]);
+        }
+        console.log('Ad blocker: ' + ((adBlock) ? 'ON' : 'OFF'));
         statusId = ((statuses.banner && status.auth) ? 1 : 0) + ((statuses.adBlock || statuses.privacy || statuses.malware) ? 2 : 0);
         console.log('Status ID: ' + statusId);
         setIcon(statusId);
@@ -102,14 +99,17 @@ function initialize() {
 }
 
 function blockWebRequest(details) {
+    var url = details.url;
+    var reqType = details.type;
     var tabId = details.tabId;
+    // var requestHostname = pwURI.hostnameFromURI(url);
+
     if (!blockCounts[tabId]) blockCounts[tabId] = 0;
     blockCounts[tabId] += 1;
-    // incrementDayBlockCount(dateLastBlocked, 1);
+    incrementDayBlockCount(dateLastBlocked, 1);
     console.log(`[Blocked] ${details.url}`);
     return { cancel: true };
 }
-
 
 /**
  * Message listener
@@ -158,7 +158,7 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
     if (auth) { initialize(); }
     if (adBlock) {
         if (adBlock.newValue) {
-            chrome.webRequest.onBeforeRequest.addListener((blockWebRequest), { urls: ['http://*/*'] }, ["blocking"]);
+            chrome.webRequest.onBeforeRequest.addListener((blockWebRequest), { urls: blacklist }, ["blocking"]);
             console.log('Ad blocker: ON');
         } else {
             chrome.webRequest.onBeforeRequest.removeListener(blockWebRequest);

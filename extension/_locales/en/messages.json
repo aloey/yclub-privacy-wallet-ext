@@ -1,8 +1,12 @@
 {
     "ext_name": {
-        "message": "Privacy Wallet",
+        "message": "Privacy Manager",
         "description": ""
     },
+    "popup_title":{
+        "message": "PRIVACY MANAGER",
+        "description": ""
+   },
     "signup_title": {
         "message": "Sign up now to unlock the following benefits",
         "description": ""
