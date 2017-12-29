@@ -5,9 +5,8 @@ var statuses = {
     privacy: false,
     malware: false,
 };
-var currentTabId;
-var blockCounts = { day: 0 };
-var dateLastBlocked;
+var activeTabId;
+var blockCounts = {};
 var syncOper;
 
 var icons = {
@@ -50,7 +49,7 @@ function setIcon(statusId, callback) {
 }
 
 function getStatus(callback) {
-    chrome.storage.sync.get(['auth', 'adBlock', 'banner', 'dayAdBlocked', 'dateLastBlocked', 'privacy', 'malware'], function (items) {
+    chrome.storage.sync.get(['auth', 'adBlock', 'banner', 'totalAdBlocked', 'privacy', 'malware'], function (items) {
         if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
         statuses.banner = items.banner || typeof items.banner === 'undefined';
         statuses.adBlock = items.adBlock || typeof items.adBlock === 'undefined';
@@ -58,57 +57,83 @@ function getStatus(callback) {
         statuses.malware = items.malware || typeof items.malware === 'undefined';
         var status = {
             auth: items.auth,
-            dayAdBlocked: items.dayAdBlocked || 0,
-            dateLastBlocked: items.dateLastBlocked
+            totalAdBlocked: items.totalAdBlocked || 0
         };
         if (callback) callback(status);
     });
 }
 
-function incrementDayBlockCount(lastDate, blocks) {
-    var todayDate = new Date().getDate();
-    if (!lastDate || lastDate !== todayDate) {
-        blockCounts.day = 0;
-        dateLastBlocked = todayDate;
-        console.log('BEGINNING OF A NEW DAY');
-    } else if (!dateLastBlocked) {
-        dateLastBlocked = lastDate;
-    }
-    blockCounts.day += blocks;
+function incrementTotalBlockCount(blocks) {
+    if (typeof blockCounts.total === 'undefined') blockCounts.total = 0;
+    blockCounts.total += blocks;
 }
 
 function syncBlockCounts() {
-    chrome.storage.sync.set({ dayAdBlocked: blockCounts.day, dateLastBlocked: dateLastBlocked }, function () {
-        console.log('Day block counts synced with storage');
+    chrome.storage.sync.set({ totalAdBlocked: blockCounts.total }, function () {
+        console.log('Total block counts synced with storage');
     });
 }
 
 function initialize() {
     getStatus(function (status) {
-        var adBlock = statuses.adBlock;
-        incrementDayBlockCount(status.dateLastBlocked, status.dayAdBlocked);
-        console.log('Ads blocked today: ' + blockCounts.day);
-        if (adBlock) {
-            chrome.webRequest.onBeforeRequest.addListener((blockWebRequest), { urls: blacklist }, ["blocking"]);
-        }
-        console.log('Ad blocker: ' + ((adBlock) ? 'ON' : 'OFF'));
-        statusId = ((statuses.banner && status.auth) ? 1 : 0) + ((statuses.adBlock || statuses.privacy || statuses.malware) ? 2 : 0);
-        console.log('Status ID: ' + statusId);
-        setIcon(statusId);
+        incrementTotalBlockCount(status.totalAdBlocked);
+        getTabContext(null, function () {
+            console.log('Ads blocked today: ' + blockCounts.total);
+            if (statuses.adBlock) {
+                chrome.webRequest.onBeforeRequest.addListener((blockWebRequest), { urls: ['<all_urls>'] }, ["blocking"]);
+            }
+            console.log('Ad blocker: ' + ((statuses.adBlock) ? 'ON' : 'OFF'));
+            statusId = ((statuses.banner && status.auth) ? 1 : 0) + ((statuses.adBlock || statuses.privacy || statuses.malware) ? 2 : 0);
+            console.log('Status ID: ' + statusId);
+            setIcon(statusId);
+        });
     });
 }
 
 function blockWebRequest(details) {
-    var url = details.url;
+    var requestURL = details.url;
     var reqType = details.type;
     var tabId = details.tabId;
-    // var requestHostname = pwURI.hostnameFromURI(url);
+    var requestHostname = pm.URI.hostnameFromURI(requestURL);
+    var tabContext;
+    if (!blockCounts.hasOwnProperty(tabId)) {
+        var rawURL = details.initiator;
+        var normalURL = normalizePageURL(tabId, rawURL);
+        var rootHostname = pm.URI.hostnameFromURI(normalURL);
+        var rootDomain = pm.URI.domainFromHostname(rootHostname) || rootHostname;
+        blockCounts[tabId] = {
+            tabId: tabId,
+            rawURL: rawURL,
+            normalURL: normalURL,
+            rootHostname: rootHostname,
+            rootDomain: rootDomain,
+            adBlockCount: 0
+        };
+    }
+    tabContext = blockCounts[tabId];
+    var context = {
+        rootDomain: tabContext.rootDomain,
+        rootHostname: tabContext.rootHostname,
+        pageDomain: tabContext.rootDomain,
+        pageHostname: tabContext.rootHostname,
+        requestDomain: '',
+        requestHostname: pm.URI.hostnameFromURI(requestURL),
+        requestURL: details.url,
+        requestType: details.type
+    };
 
-    if (!blockCounts[tabId]) blockCounts[tabId] = 0;
-    blockCounts[tabId] += 1;
-    incrementDayBlockCount(dateLastBlocked, 1);
-    console.log(`[Blocked] ${details.url}`);
-    return { cancel: true };
+    var result = pm.staticNetFilteringEngine.matchString(context);
+    // var url = pm.urlTokenizer.setURL(requestURL);
+    // var pageHostnameRegister = pageHostname || '';
+    // var requestHostnameRegister = requestHostname;
+
+    if (result === 1) {
+        blockCounts[tabId].adBlockCount += 1;
+        incrementTotalBlockCount(1);
+        console.log(`[Blocked] ${requestURL}`);
+        return { cancel: true };
+    }
+    return;
 }
 
 /**
@@ -125,7 +150,7 @@ chrome.runtime.onMessage.addListener(
             setIcon(statusId, sendResponse);
             return true;
         } else if (request.trigger === 1) {
-            sendResponse({ page: blockCounts[currentTabId] || 0, day: blockCounts.day });
+            sendResponse({ page: blockCounts[activeTabId].adBlockCount || 0, total: blockCounts.total });
         }
         // if (request.trigger === "currentUrl") {
         //     console.log(request.currentUrl)
@@ -133,11 +158,42 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
+var normalizePageURL = function (tabId, pageURL) {
+    if (tabId.toString() === '-1') {
+        return 'http://behind-the-scene/';
+    }
+    var uri = pm.URI.set(pageURL);
+    var scheme = uri.scheme;
+    if (scheme === 'https' || scheme === 'http') {
+        return uri.normalizedURI();
+    }
+
+    var fakeHostname = scheme + '-scheme';
+
+    if (uri.hostname !== '') {
+        fakeHostname = uri.hostname + '.' + fakeHostname;
+    } else if (scheme === 'about' && uri.path !== '') {
+        fakeHostname = uri.path + '.' + fakeHostname;
+    }
+
+    return 'http://' + fakeHostname + '/';
+};
+
 // Page load listener
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     if (changeInfo.status === 'loading') {
         console.log('Page loading...');
-        blockCounts[tabId] = 0;
+        var rawURL = tab.url;
+        var normalURL = normalizePageURL(tabId, rawURL);
+        var rootHostname = pm.URI.hostnameFromURI(normalURL);
+        var rootDomain = pm.URI.domainFromHostname(rootHostname) || rootHostname;
+        getTabContext(tabId, function (tabContext) {
+            tabContext.rawURL = rawURL;
+            tabContext.normalURL = normalURL;
+            tabContext.rootHostname = rootHostname;
+            tabContext.rootDomain = rootDomain;
+            tabContext.adBlockCount = 0;
+        });
     } else if (changeInfo.status === 'complete') {
         console.log('Page complete');
         clearTimeout(syncOper);
@@ -145,11 +201,58 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     }
 });
 
+function getTabContext(tabId, callback) {
+    if (!callback) callback = function () { };
+    if (tabId === null) {
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            var tab = tabs[0];
+            if (!tab) return callback();
+            var tabId = tab.id;
+            if (!blockCounts[tabId]) {
+                var rawURL = tab.url;
+                var normalURL = normalizePageURL(tabId, rawURL);
+                var rootHostname = pm.URI.hostnameFromURI(normalURL);
+                var rootDomain = pm.URI.domainFromHostname(rootHostname) || rootHostname;
+                blockCounts[tabId] = {
+                    tabId: tabId,
+                    rawURL: rawURL,
+                    normalURL: normalURL,
+                    rootHostname: rootHostname,
+                    rootDomain: rootDomain,
+                    adBlockCount: 0
+                };
+            }
+            callback(blockCounts[tabId]);
+        })
+    } else {
+        chrome.tabs.get(tabId, function (tab) {
+            var tabId = tab.id;
+            if (!blockCounts[tabId]) {
+                var rawURL = tab.url;
+                var normalURL = normalizePageURL(tabId, rawURL);
+                var rootHostname = pm.URI.hostnameFromURI(normalURL);
+                var rootDomain = pm.URI.domainFromHostname(rootHostname) || rootHostname;
+                blockCounts[tabId] = {
+                    tabId: tabId,
+                    rawURL: rawURL,
+                    normalURL: normalURL,
+                    rootHostname: rootHostname,
+                    rootDomain: rootDomain,
+                    adBlockCount: 0
+                };
+            }
+            callback(blockCounts[tabId]);
+        });
+    }
+}
+
 // Active tab listener
-chrome.tabs.onActivated.addListener(function (activeInfo) {
-    console.log('### Tab changed')
-    currentTabId = activeInfo.tabId;
-});
+function onTabActivated(activeInfo) {
+    console.log('### Active tab changed')
+    activeTabId = activeInfo.tabId;
+    // getTabContext(activeTabId)
+};
+chrome.tabs.onActivated.addListener(onTabActivated);
 
 // Ad blocking listener
 chrome.storage.onChanged.addListener(function (changes, areaName) {
@@ -158,7 +261,7 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
     if (auth) { initialize(); }
     if (adBlock) {
         if (adBlock.newValue) {
-            chrome.webRequest.onBeforeRequest.addListener((blockWebRequest), { urls: blacklist }, ["blocking"]);
+            chrome.webRequest.onBeforeRequest.addListener((blockWebRequest), { urls: ['<all_urls>'] }, ["blocking"]);
             console.log('Ad blocker: ON');
         } else {
             chrome.webRequest.onBeforeRequest.removeListener(blockWebRequest);

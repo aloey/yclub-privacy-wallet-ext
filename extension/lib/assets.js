@@ -709,8 +709,6 @@ api.get = function(assetKey, options, callback) {
             details.error = assetDetails.lastError = err;
         } else {
             assetDetails.lastError = undefined;
-            console.log('##['+assetKey+']reportback')
-            console.log(details)
         }
         callback(details);
     };

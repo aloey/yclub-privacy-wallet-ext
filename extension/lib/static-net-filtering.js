@@ -2709,9 +2709,6 @@ pm.staticNetFilteringEngine = (function () {
         var categories = this.categories,
             catBits, bucket;
 
-
-        console.log(categories)
-
         // https://github.com/chrisaljoudi/uBlock/issues/139
         // Test against important block filters.
         // The purpose of the `important` option is to reverse the order of
@@ -2772,7 +2769,6 @@ pm.staticNetFilteringEngine = (function () {
                 }
                 if (this.fRegister === null) {
                     catBits = BlockAction | type | party;
-                    console.log('catbits: ' + catBits)
                     if ((bucket = categories.get(catBits))) {
                         if (this.matchTokens(bucket, url)) {
                             this.cbRegister = catBits;

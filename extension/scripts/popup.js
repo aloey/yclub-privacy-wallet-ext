@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     chrome.runtime.sendMessage({ trigger: 1 }, function (blockCounts) {
         document.getElementById('page-ads').innerHTML = blockCounts.page;
-        document.getElementById('day-ads').innerHTML = blockCounts.day;
+        document.getElementById('total-ads').innerHTML = blockCounts.total;
     });
 
     registerBtn.addEventListener('click', openRegistration);

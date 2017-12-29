@@ -484,7 +484,7 @@
 	"KOR-0": {
 		"content": "filters",
 		"group": "regions",
-		"off": true,
+		"off": false,
 		"title": "KOR: Korean Adblock List",
 		"lang": "ko",
 		"contentURL": "https://raw.githubusercontent.com/gfmaster/adblock-korea-contrib/master/filter.txt",
@@ -493,7 +493,7 @@
 	"KOR-1": {
 		"content": "filters",
 		"group": "regions",
-		"off": true,
+		"off": false,
 		"title": "KOR: YousList",
 		"lang": "ko",
 		"contentURL": "https://raw.githubusercontent.com/yous/YousList/master/youslist.txt",

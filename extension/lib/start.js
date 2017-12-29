@@ -211,7 +211,6 @@ pm.restart = (function () {
     var onFirstFetchReady = function (fetched) {
         // https://github.com/gorhill/uBlock/issues/747
         µb.firstInstall = fetched.version === '0.0.0.0';
-        console.log(fetched);
         // Order is important -- do not change:
         onSystemSettingsReady(fetched);
         fromFetch(µb.localSettings, fetched);
